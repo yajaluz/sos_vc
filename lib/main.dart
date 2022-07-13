@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sos_vc/app/ui/auth/counter.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
-import 'package:sos_vc/app/ui/home/home.dart';
+import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/register/new-pass.dart';
 import 'package:sos_vc/app/ui/register/register.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
@@ -28,16 +27,15 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.cantarellTextTheme(
             Theme.of(context).textTheme,
           )),
-      initialRoute: ResetPasswordPage.tag,
-      // home: LoginPage(),
+      initialRoute: LoginPage.tag,
+      // home: HomePageFinger(),
       routes: {
-        Counter.tag: (_) => Counter(),
         LoginPage.tag: (_) => LoginPage(),
-        HomePage.tag: (_) => HomePage(),
         RegisterPage.tag: (_) => RegisterPage(),
         SignUpPage.tag: (_) => SignUpPage(),
         ResetPasswordPage.tag: (_) => ResetPasswordPage(),
         NewPassPage.tag: (_) => NewPassPage(),
+        IndexPage.tag: (_) => IndexPage(),
       },
     );
   }

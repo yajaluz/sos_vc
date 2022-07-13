@@ -16,6 +16,7 @@ class LoginPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          // Padding(padding: EdgeInsets.all(5)),
           Expanded(
             flex: 1,
             child: Row(

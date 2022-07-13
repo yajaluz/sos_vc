@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sos_vc/app/ui/layout.dart';
+import 'package:sos_vc/app/ui/register/finger-face-authID.dart';
 
-class ResetPasswordPage extends StatelessWidget {
+class ResetPasswordPage extends StatefulWidget {
   static String tag = '/reset';
-  const ResetPasswordPage({Key? key}) : super(key: key);
+  @override
+  FingerFaceIDPage createState() => FingerFaceIDPage();
 
   @override
   Widget build(BuildContext context) {
@@ -89,16 +90,69 @@ class ResetPasswordPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 25),
             Column(
               children: <Widget>[
                 Divider(
-                  height: 50,
-                  thickness: 3,
-                  indent: 20,
-                  endIndent: 20,
+                  color: Color(0xFF7540EE).withOpacity(.2),
+                  thickness: 2,
+                  indent: 3,
+                  endIndent: 0,
+                  // width: 10,
                 ),
-                // Text('_____ Ou _____'),
+                SizedBox(height: 25),
+                Column(
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () => FingerFaceIDPage().initState(),
+                          child:
+                              // Icon(
+                              //   FontAwesomeIcons.fingerprint,
+                              //   color: Color(0xFF7540EE),
+                              //   size: 60,
+                              // ),
+                              SizedBox(
+                            width: 100,
+                            height: 120,
+                            child: Image.asset('assets/finger.png'),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 100,
+                            // padding: const EdgeInsets.all(10),
+                            child: VerticalDivider(
+                              color: Color(0xFF7540EE).withOpacity(.2),
+                              thickness: 2,
+                              indent: 3,
+                              endIndent: 0,
+                              width: 10,
+                            ),
+                          ),
+                        ),
+                        FlatButton(
+                          onPressed: () => FingerFaceIDPage().initState(),
+                          child:
+                              // Icon(
+                              //   FontAwesomeIcons.faceDizzy,
+                              //   color: Color(0xFF7540EE),
+                              //   size: 60,
+                              // ),
+                              SizedBox(
+                            width: 73,
+                            height: 120,
+                            child: Image.asset('assets/face.png'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             )
           ],

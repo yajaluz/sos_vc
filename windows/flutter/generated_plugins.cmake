@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus_windows
+  local_auth_windows
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
