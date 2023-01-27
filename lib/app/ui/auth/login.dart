@@ -1,12 +1,18 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+// import 'package:sos_vc/app/data/model/registration.dart';
 import 'package:sos_vc/app/ui/layout.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
   static String tag = '/login';
+  final controllerEmail = TextEditingController();
+  final controllerPass = TextEditingController();
+  late BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class LoginPage extends StatelessWidget {
                 ]),
           ),
           Expanded(
-              flex: 4,
+              flex: 5,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -52,6 +58,9 @@ class LoginPage extends StatelessWidget {
                         )),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: controllerEmail,
+                      autofocus: true,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         hintText: 'Email',
                         hintStyle: TextStyle(
@@ -75,6 +84,10 @@ class LoginPage extends StatelessWidget {
                       height: 10,
                     ),
                     TextFormField(
+                      controller: controllerPass,
+                      obscureText: true,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
                         hintText: 'Senha',
                         hintStyle: TextStyle(
@@ -102,8 +115,25 @@ class LoginPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  FlatButton(
-                    onPressed: () => null,
+                  TextButton(
+                    onPressed: () async {
+                      // Stream<List<Registration>> userRegistration =
+                      //     FirebaseFirestore.instance
+                      //         .collection('users')
+                      //         .snapshots()
+                      //         .map((snapshots) => snapshots.docs
+                      //             .map((doc) =>
+                      //                 Registration.fromJson(doc.data()))
+                      //             .toList());
+
+                      // Stream<QuerySnapshot> result = FirebaseFirestore.instance
+                      //     .collection('users')
+                      //     .where('email', isEqualTo: controllerEmail.text)
+                      //     .where('pass', isEqualTo: controllerPass.text)
+                      //     .snapshots();
+                      _context = context;
+                      SignIn();
+                    },
                     child: Text(
                       'Entrar',
                       style: TextStyle(
@@ -111,12 +141,12 @@ class LoginPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    color: Color(0xFF7540EE).withOpacity(.2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
+                    // color: Color(0xFF7540EE).withOpacity(.2),
+                    // shape: RoundedRectangleBorder(
+                    //   borderRadius: BorderRadius.circular(25),
+                    // ),
                   ),
-                  FlatButton(
+                  TextButton(
                     onPressed: () => Get.toNamed(ResetPasswordPage.tag),
                     child: Text(
                       'Esqueceu sua senha?',
@@ -140,7 +170,7 @@ class LoginPage extends StatelessWidget {
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  FlatButton(
+                  TextButton(
                     onPressed: () => Get.toNamed(SignUpPage.tag),
                     child: Text(
                       'Crie uma agora!',
@@ -155,5 +185,23 @@ class LoginPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future SignIn() async {
+    showDialog(
+        context: _context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+              child: CircularProgressIndicator.adaptive(),
+            ));
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: controllerEmail.text.trim(),
+        password: controllerPass.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+    }
   }
 }

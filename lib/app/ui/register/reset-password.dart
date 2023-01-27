@@ -77,7 +77,7 @@ class ResetPasswordPage extends StatefulWidget {
                 borderRadius: BorderRadius.all(Radius.circular(56)),
               ),
               child: SizedBox.expand(
-                child: FlatButton(
+                child: TextButton(
                   child: Text(
                     'Enviar',
                     style: TextStyle(
@@ -107,7 +107,7 @@ class ResetPasswordPage extends StatefulWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        FlatButton(
+                        TextButton(
                           onPressed: () => FingerFaceIDPage().initState(),
                           child:
                               // Icon(
@@ -135,7 +135,7 @@ class ResetPasswordPage extends StatefulWidget {
                             ),
                           ),
                         ),
-                        FlatButton(
+                        TextButton(
                           onPressed: () => FingerFaceIDPage().initState(),
                           child:
                               // Icon(
