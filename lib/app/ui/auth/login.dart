@@ -7,9 +7,19 @@ import 'package:sos_vc/app/ui/layout.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sos_vc/main.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginWidget extends StatefulWidget {
   static String tag = '/login';
+
+  const LoginWidget({Key? key}) : super(key: key);
+
+  @override
+  LoginPage createState() => LoginPage();
+}
+
+class LoginPage extends State<LoginWidget> {
+  // static String tag = '/login';
   final controllerEmail = TextEditingController();
   final controllerPass = TextEditingController();
   late BuildContext _context;
@@ -117,20 +127,6 @@ class LoginPage extends StatelessWidget {
                 children: <Widget>[
                   TextButton(
                     onPressed: () async {
-                      // Stream<List<Registration>> userRegistration =
-                      //     FirebaseFirestore.instance
-                      //         .collection('users')
-                      //         .snapshots()
-                      //         .map((snapshots) => snapshots.docs
-                      //             .map((doc) =>
-                      //                 Registration.fromJson(doc.data()))
-                      //             .toList());
-
-                      // Stream<QuerySnapshot> result = FirebaseFirestore.instance
-                      //     .collection('users')
-                      //     .where('email', isEqualTo: controllerEmail.text)
-                      //     .where('pass', isEqualTo: controllerPass.text)
-                      //     .snapshots();
                       _context = context;
                       SignIn();
                     },
@@ -171,7 +167,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => Get.toNamed(SignUpPage.tag),
+                    onPressed: () => Get.toNamed(SignUpAux.tag),
                     child: Text(
                       'Crie uma agora!',
                       style: TextStyle(
@@ -203,5 +199,7 @@ class LoginPage extends StatelessWidget {
     } on FirebaseAuthException catch (e) {
       print(e);
     }
+
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }

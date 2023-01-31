@@ -10,10 +10,6 @@ import 'package:sos_vc/app/ui/register/reset-password.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-// void main() {
-//   runApp(const MyApp());
-// }
-
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -23,49 +19,64 @@ Future main() async {
     Get.put(FirebaseAuth.instance);
   });
 
-  runApp(const MyApp());
+  runApp(const Teste());
 }
 
-final navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Teste extends StatelessWidget {
+  const Teste({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // Scaffold(
-    //   body: StreamBuilder<User?>(
-    //     stream: FirebaseAuth.instance.authStateChanges(),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasData) {
-    //         IndexPage();
-    //       } else {
-    //         LoginPage();
-    //       }
-    //     },
-    //   ),
-    // );
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'Flutter Demo',
+      home: const MyApp(),
       theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: GoogleFonts.cantarellTextTheme(
             Theme.of(context).textTheme,
           )),
-      initialRoute: LoginPage.tag,
-      // home: HomePageFinger(),
+      initialRoute: LoginWidget.tag,
       routes: {
-        LoginPage.tag: (_) => LoginPage(),
+        SignUpAux.tag: (_) => SignUpAux(),
+        LoginWidget.tag: (_) => const LoginWidget(),
         RegisterPage.tag: (_) => RegisterPage(),
-        SignUpPage.tag: (_) => SignUpPage(),
+        // AuxPage.tag: (_) => AuxPage(),
         ResetPasswordPage.tag: (_) => ResetPasswordPage(),
         NewPassPage.tag: (_) => NewPassPage(),
-        IndexPage.tag: (_) => IndexPage(),
+        IndexPage.tag: (_) => const IndexPage(),
       },
     );
   }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text('Algo saiu errado'),
+              );
+            } else if (snapshot.hasData) {
+              return const IndexPage();
+            } else {
+              return const LoginWidget();
+            }
+          },
+        ),
+      );
 }
