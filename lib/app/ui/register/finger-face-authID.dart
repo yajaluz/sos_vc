@@ -64,7 +64,7 @@ class FingerFaceIDPage extends State<ResetPasswordPage> {
     if (isAutheticated) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => IndexPage(),
+          builder: (context) => IndexPageAux(),
         ),
       );
     }

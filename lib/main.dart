@@ -48,7 +48,7 @@ class Teste extends StatelessWidget {
         // AuxPage.tag: (_) => AuxPage(),
         ResetPasswordPage.tag: (_) => ResetPasswordPage(),
         NewPassPage.tag: (_) => NewPassPage(),
-        IndexPage.tag: (_) => const IndexPage(),
+        IndexPageAux.tag: (_) => const IndexPageAux(),
       },
     );
   }
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
                 child: Text('Algo saiu errado'),
               );
             } else if (snapshot.hasData) {
-              return const IndexPage();
+              return const IndexPageAux();
             } else {
               return const LoginWidget();
             }

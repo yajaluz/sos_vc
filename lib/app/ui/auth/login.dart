@@ -130,7 +130,7 @@ class LoginPage extends State<LoginWidget> {
                       _context = context;
                       SignIn();
                     },
-                    child: Text(
+                    child: const Text(
                       'Entrar',
                       style: TextStyle(
                         color: Color(0xFF7540EE),
