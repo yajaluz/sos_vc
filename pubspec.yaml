@@ -49,6 +49,9 @@ dependencies:
 
   #pick file
   file_picker: ^5.2.5
+
+  #cache image
+  cached_network_image: ^3.2.0
     
   #masks 
   brasil_fields: ^1.7.0

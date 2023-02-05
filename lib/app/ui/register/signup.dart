@@ -33,8 +33,11 @@ class SignUpPage extends State<SignUpAux> {
   final controllerConfirmPass = TextEditingController();
   UploadTask? upload;
   File? file;
+  PlatformFile? pickedFile;
   bool value = true;
   late BuildContext _context;
+  final defaultImage = //const AssetImage('assets/default.png');
+      "https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg";
 
   @override
   Widget build(BuildContext context) {
@@ -56,43 +59,68 @@ class SignUpPage extends State<SignUpAux> {
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
               children: <Widget>[
-                new GestureDetector(
+                GestureDetector(
                   onTap: () {
                     selectFile();
                   },
                   child: Container(
                     width: 200,
                     height: 250,
-                    alignment: Alignment(0.0, 1.20),
-                    decoration: new BoxDecoration(
-                      image: file != null
-                          ? DecorationImage(
-                              image: new FileImage(file!),
-                              fit: BoxFit.fitWidth,
-                            )
-                          : DecorationImage(
-                              image: AssetImage('assets/default.png'),
-                              fit: BoxFit.fitWidth,
+                    // alignment: Alignment(0.0, 1.60),
+                    // decoration: new BoxDecoration(
+                    // image: DecorationImage(
+                    // //image: AssetImage('assets/default.png'),
+                    // fit: BoxFit.fitWidth,
+                    // ),
+                    // ),
+                    child: Wrap(children: [
+                      Center(
+                        child: pickedFile == null
+                            ? CircleAvatar(
+                                radius: 100,
+                                child: ClipOval(
+                                  child: FadeInImage.assetNetwork(
+                                    image: defaultImage,
+                                    placeholder: 'assets/default.png',
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 100,
+                                child: ClipOval(
+                                  child: Image.file(
+                                    File(pickedFile!.path!),
+                                    fit: BoxFit.cover,
+                                    width: 250,
+                                    height: 250,
+                                  ),
+                                ),
+                                backgroundColor: Colors.transparent,
+                              ),
+                      ),
+                      Center(
+                        child: Container(
+                          height: 56,
+                          width: 56,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Color(0xFF7540EE).withOpacity(.2),
+                              border: Border.all(
+                                width: 4.0,
+                                color: const Color(0xFFFFFFFF),
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(56))),
+                          child: const SizedBox.expand(
+                            child: Icon(
+                              FontAwesomeIcons.plus,
+                              color: Color(0xFF7540EE),
                             ),
-                    ),
-                    child: Container(
-                      height: 56,
-                      width: 56,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Color(0xFF7540EE).withOpacity(.2),
-                          border: Border.all(
-                            width: 4.0,
-                            color: const Color(0xFFFFFFFF),
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(56))),
-                      child: SizedBox.expand(
-                        child: Icon(
-                          FontAwesomeIcons.plus,
-                          color: Color(0xFF7540EE),
                         ),
                       ),
-                    ),
+                    ]),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -309,6 +337,10 @@ class SignUpPage extends State<SignUpAux> {
                           //salva infos e credenciais
                           createRegistration(reg: reg);
                           _context = context;
+
+                          //storage image
+                          uploadTasks();
+
                           signUp();
                           Get.toNamed(LoginWidget.tag);
                         } else {
@@ -333,7 +365,6 @@ class SignUpPage extends State<SignUpAux> {
                       style: TextStyle(
                         color: Color(0xFF7540EE),
                         fontStyle: FontStyle.italic,
-                        // fontSize: 15,
                       ),
                     ),
                     onPressed: () => Get.toNamed(
@@ -353,27 +384,21 @@ class SignUpPage extends State<SignUpAux> {
 
     if (result == null) return;
 
-    final path = result.files.single.path!;
-
-    StatefulBuilder(builder: (context, setState) {
-      return Switch(
-        value: value,
-        onChanged: (newValue) => file = File(path),
-      );
+    setState(() {
+      pickedFile = result.files.first;
     });
   }
 
   Future uploadTasks() async {
-    if (file == null) return;
+    if (pickedFile == null) return;
 
-    final fileName = basename(file!.path);
-    final destination = "files/$fileName";
-    // final fileImage = File(path)
+    final fileName = basename(pickedFile!.name!);
+    final destination = 'files/${fileName}';
+    final fileImage = File(pickedFile!.path!);
 
-    final ref = FirebaseStorage.instance.ref(destination);
+    final ref = FirebaseStorage.instance.ref().child(destination);
 
-    // return
-    ref.putFile(file!);
+    ref.putFile(fileImage);
   }
 
   Future createRegistration({required Registration reg}) async {
