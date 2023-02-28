@@ -143,7 +143,7 @@ class LoginPage extends State<LoginWidget> {
                     // ),
                   ),
                   TextButton(
-                    onPressed: () => Get.toNamed(ResetPasswordPage.tag),
+                    onPressed: () => Get.toNamed(ResetWidget.tag),
                     child: Text(
                       'Esqueceu sua senha?',
                       style: TextStyle(

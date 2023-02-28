@@ -4,7 +4,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
 
-class FingerFaceIDPage extends State<ResetPasswordPage> {
+class FingerFaceIDPage extends State<ResetWidget> {
   static String tag = '/finger-faceID';
 
   final LocalAuthentication _localAuth = LocalAuthentication();

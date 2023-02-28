@@ -17,7 +17,7 @@ import 'package:sos_vc/main.dart';
 class SignUpAux extends StatefulWidget {
   static String tag = '/signup';
 
-  SignUpAux({Key? key}) : super(key: key);
+  const SignUpAux({Key? key}) : super(key: key);
 
   @override
   SignUpPage createState() => SignUpPage();
@@ -36,25 +36,23 @@ class SignUpPage extends State<SignUpAux> {
   PlatformFile? pickedFile;
   bool value = true;
   late BuildContext _context;
-  final defaultImage = //const AssetImage('assets/default.png');
+  late String? userId;
+  final defaultImage =
       "https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg";
 
   @override
   Widget build(BuildContext context) {
-    final filename =
-        file != null ? basename(file!.path) : 'Nenhum arquivo selecionado!';
+    // final filename = file != null ? basename(file!.path) : 'Nenhum arquivo selecionado!';
 
     return Layout.render(
       // fab: null,
       content: Container(
         padding: EdgeInsets.only(top: 20, left: 40, right: 40),
         color: Colors.white,
-        // key: _key,
         child: SingleChildScrollView(
           child: Form(
             key: _key,
             child: ListView(
-              // key: _key,
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
@@ -83,6 +81,8 @@ class SignUpPage extends State<SignUpAux> {
                                     image: defaultImage,
                                     placeholder: 'assets/default.png',
                                     fit: BoxFit.fitWidth,
+                                    width: 250,
+                                    height: 250,
                                   ),
                                 ),
                               )
@@ -252,8 +252,8 @@ class SignUpPage extends State<SignUpAux> {
                       if (value.length < 6) {
                         return 'A senha deve ter pelo menos 6 caracteres.';
                       }
-                      if (value != controllerPass.text) {
-                        return 'A senha deve ser igual ao primeiro campo de senha digitado';
+                      if (value != controllerConfirmPass.text) {
+                        return 'As senhas digitadas devem ser iguais';
                       }
 
                       return null;
@@ -292,7 +292,7 @@ class SignUpPage extends State<SignUpAux> {
                       if (value.length < 6) {
                         return 'A senha deve ter pelo menos 6 caracteres.';
                       }
-                      if (value != controllerPass) {
+                      if (value != controllerPass.text) {
                         return 'As senhas digitadas devem ser iguais';
                       }
                       return null;
@@ -334,14 +334,14 @@ class SignUpPage extends State<SignUpAux> {
                         if (_key.currentState != null &&
                             _key.currentState!.validate()) {
                           _key.currentState?.save();
-                          //salva infos e credenciais
-                          createRegistration(reg: reg);
                           _context = context;
-
                           //storage image
                           uploadTasks();
 
                           signUp();
+                          //salva infos e credenciais
+                          createRegistration(reg: reg);
+
                           Get.toNamed(LoginWidget.tag);
                         } else {
                           Center(
@@ -402,8 +402,9 @@ class SignUpPage extends State<SignUpAux> {
   }
 
   Future createRegistration({required Registration reg}) async {
-    final docUser = FirebaseFirestore.instance.collection('users').doc();
-    reg.id = docUser.id;
+    Future.delayed(const Duration(seconds: 3));
+    final docUser = FirebaseFirestore.instance.collection('users').doc(userId);
+    reg.id = userId.toString();
 
     final info = reg.toJson();
     await docUser.set(info);
@@ -418,13 +419,18 @@ class SignUpPage extends State<SignUpAux> {
             ));
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: controllerEmail.text.trim(),
-          password: controllerPass.text.trim());
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: controllerEmail.text.trim(),
+              password: controllerPass.text.trim())
+          .then((value) {
+        setState(() => userId = value.user!.uid);
+        value.user!.updateDisplayName(controllerName.text.trim());
+        value.user!.updatePhotoURL(pickedFile!.path!);
+      });
     } on FirebaseAuthException catch (e) {
       print(e);
     }
-
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }

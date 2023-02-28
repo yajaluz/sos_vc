@@ -2,6 +2,8 @@
     package="com.example.sos_vc">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+        <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
    <application
         android:label="sos_vc"
         android:name="${applicationName}"

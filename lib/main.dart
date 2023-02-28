@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
+import 'package:sos_vc/app/ui/profile/my-favorites.dart';
+import 'package:sos_vc/app/ui/profile/my-order.dart';
+import 'package:sos_vc/app/ui/profile/my-profile.dart';
+import 'package:sos_vc/app/ui/profile/my-region.dart';
 import 'package:sos_vc/app/ui/register/new-pass.dart';
 import 'package:sos_vc/app/ui/register/register.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
@@ -42,11 +46,14 @@ class Teste extends StatelessWidget {
           )),
       initialRoute: LoginWidget.tag,
       routes: {
-        SignUpAux.tag: (_) => SignUpAux(),
+        SignUpAux.tag: (_) => const SignUpAux(),
         LoginWidget.tag: (_) => const LoginWidget(),
         RegisterPage.tag: (_) => RegisterPage(),
-        // AuxPage.tag: (_) => AuxPage(),
-        ResetPasswordPage.tag: (_) => ResetPasswordPage(),
+        MyFavoritePageAux.tag: (_) => const MyFavoritePageAux(),
+        MyOrderPageAux.tag: (_) => const MyOrderPageAux(),
+        MyRegionPageAux.tag: (_) => const MyRegionPageAux(),
+        MyProfilePageAux.tag: (_) => const MyProfilePageAux(),
+        ResetWidget.tag: (_) => const ResetWidget(),
         NewPassPage.tag: (_) => NewPassPage(),
         IndexPageAux.tag: (_) => const IndexPageAux(),
       },
