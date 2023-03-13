@@ -53,9 +53,11 @@ dependencies:
   #banner carrossel
   carousel_slider: ^4.2.1
 
-  #location
+  #location and weather
   geolocator: ^9.0.2
   geocoding: ^2.0.5
+  http: ^0.13.5
+  flutter_spinkit: ^5.1.0
 
   #smooth indicator
   smooth_page_indicator: ^1.0.0+2

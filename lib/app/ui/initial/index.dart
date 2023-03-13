@@ -16,6 +16,8 @@ import 'package:sos_vc/app/data/model/registration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
 
+import 'loading_screen.dart';
+
 class IndexPageAux extends StatefulWidget {
   static String tag = '/index';
 
@@ -59,7 +61,7 @@ class IndexPage extends State<IndexPageAux> {
             child: Column(
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: const Color(0xFF7540EE)),
+                  decoration: BoxDecoration(color: Color(0xFF7540EE)),
                   accountName: Text(name),
                   accountEmail: Text(email),
                   currentAccountPicture: CircleAvatar(
@@ -83,6 +85,11 @@ class IndexPage extends State<IndexPageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
+                  leading: const Icon(Icons.notifications_none),
+                  title: const Text('Notificações'),
+                  onTap: () => Get.toNamed(IndexPageAux.tag),
+                ),
+                ListTile(
                   leading: const Icon(Icons.map_rounded),
                   title: const Text('Minha região'),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
@@ -96,6 +103,11 @@ class IndexPage extends State<IndexPageAux> {
                   leading: const Icon(Icons.favorite),
                   title: const Text("Favoritos"),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   dense: true,
@@ -125,23 +137,32 @@ class IndexPage extends State<IndexPageAux> {
               onPressed: null,
               icon: Icon(Icons.search),
               tooltip: 'Search',
-            )
+            ),
+            IconButton(onPressed: null, icon: Icon(Icons.notifications_none))
           ],
         ),
         body: ListView(children: <Widget>[
-          Center(
-            child: Column(children: [
-              ResumePage(
-                cidade: 'Salvador-BA',
-                temperaturaAtual: 28,
-                tempMax: 30,
-                tempMin: 26,
-                descricao: 'Ensolarado',
-                numeroIcone: 1,
-              ),
-            ]),
+          FittedBox(
+            alignment: Alignment.bottomCenter,
+            fit: BoxFit.fill,
+            // height: 50.0,
+            child: Container(
+              height: 30,
+              width: 30,
+              child: const LoadingScreen(),
+            ), //Get.toNamed(LoadingScreen.tag);
+            //  Column(children: [
+            // ResumePage(
+            // cidade: 'Salvador-BA',
+            // temperaturaAtual: 28,
+            // tempMax: 30,
+            // tempMin: 26,
+            // descricao: 'Ensolarado',
+            // numeroIcone: 1,
+            // ),
+            // ]),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [

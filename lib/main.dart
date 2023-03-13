@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
+import 'package:sos_vc/app/ui/initial/loading_screen.dart';
+import 'package:sos_vc/app/ui/initial/location_screen.dart';
 import 'package:sos_vc/app/ui/profile/my-favorites.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
@@ -56,6 +58,7 @@ class Teste extends StatelessWidget {
         ResetWidget.tag: (_) => const ResetWidget(),
         NewPassPage.tag: (_) => NewPassPage(),
         IndexPageAux.tag: (_) => const IndexPageAux(),
+        LoadingScreen.tag: (_) => const LoadingScreen(),
       },
     );
   }
