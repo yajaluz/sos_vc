@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
+import 'package:sos_vc/app/ui/initial/animationpage.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/initial/loading_screen.dart';
-import 'package:sos_vc/app/ui/initial/location_screen.dart';
 import 'package:sos_vc/app/ui/profile/my-favorites.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
@@ -17,6 +18,7 @@ import 'package:sos_vc/app/ui/register/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future main() async {
+  Animate.restartOnHotReload = true;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -46,8 +48,9 @@ class Teste extends StatelessWidget {
           textTheme: GoogleFonts.cantarellTextTheme(
             Theme.of(context).textTheme,
           )),
-      initialRoute: LoginWidget.tag,
+      initialRoute: AnimationPage.tag,
       routes: {
+        AnimationPage.tag: (_) => const AnimationPage(),
         SignUpAux.tag: (_) => const SignUpAux(),
         LoginWidget.tag: (_) => const LoginWidget(),
         RegisterPage.tag: (_) => RegisterPage(),

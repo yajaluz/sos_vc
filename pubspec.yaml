@@ -71,6 +71,9 @@ dependencies:
   #masks 
   brasil_fields: ^1.7.0
 
+  #animated
+  flutter_animate: ^4.1.1+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -6,17 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
-import 'package:sos_vc/app/ui/initial/resume.dart';
+import 'package:sos_vc/app/ui/initial/loading_screen.dart';
+import 'package:sos_vc/app/ui/initial/weather_location.dart';
 import 'package:sos_vc/app/ui/profile/my-favorites.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
-import 'package:sos_vc/app/ui/profile/my-region.dart';
-import 'package:sos_vc/app/ui/layout.dart';
 import 'package:sos_vc/app/data/model/registration.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sos_vc/app/ui/register/signup.dart';
-
-import 'loading_screen.dart';
+import 'location_screen.dart';
+import '../../controller/weather.dart';
 
 class IndexPageAux extends StatefulWidget {
   static String tag = '/index';
@@ -34,6 +30,7 @@ class IndexPage extends State<IndexPageAux> {
   String name = '', email = '';
   late Registration reg;
   User? user = FirebaseAuth.instance.currentUser;
+  dynamic weatherData;
 
   final urlImages = [
     'https://www12.senado.leg.br/noticias/materias/2023/02/23/senadores-se-manifestam-por-tragedia-no-litoral-norte-de-sao-paulo/52705241903_0b08e268d9_k.jpg/mural/imagem_materia',
@@ -45,6 +42,20 @@ class IndexPage extends State<IndexPageAux> {
   void initState() {
     super.initState();
     getUser();
+    getDataWeather();
+    // setState(() {
+    // weatherData = WeatherModel().getLocationWeather();
+    // });
+  }
+
+  void getDataWeather() async {
+    var data = await WeatherModel().getLocationWeather();
+
+    if (data != null) {
+      setState(() {
+        weatherData = data;
+      });
+    }
   }
 
   @override
@@ -61,7 +72,7 @@ class IndexPage extends State<IndexPageAux> {
             child: Column(
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: Color(0xFF7540EE)),
+                  decoration: const BoxDecoration(color: Color(0xFF7540EE)),
                   accountName: Text(name),
                   accountEmail: Text(email),
                   currentAccountPicture: CircleAvatar(
@@ -141,63 +152,64 @@ class IndexPage extends State<IndexPageAux> {
             IconButton(onPressed: null, icon: Icon(Icons.notifications_none))
           ],
         ),
-        body: ListView(children: <Widget>[
-          FittedBox(
-            alignment: Alignment.bottomCenter,
-            fit: BoxFit.fill,
-            // height: 50.0,
-            child: Container(
-              height: 30,
-              width: 30,
-              child: const LoadingScreen(),
-            ), //Get.toNamed(LoadingScreen.tag);
-            //  Column(children: [
-            // ResumePage(
-            // cidade: 'Salvador-BA',
-            // temperaturaAtual: 28,
-            // tempMax: 30,
-            // tempMin: 26,
-            // descricao: 'Ensolarado',
-            // numeroIcone: 1,
-            // ),
-            // ]),
-          ),
-          const SizedBox(height: 20),
-          Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              CarouselSlider.builder(
-                options: CarouselOptions(
-                  height: 250,
-                  // initialPage: 0,
-                  autoPlay: true,
-                  enableInfiniteScroll: true,
-                  autoPlayInterval: const Duration(seconds: 5),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                  enlargeCenterPage: true,
-                  enlargeStrategy: CenterPageEnlargeStrategy.height,
-                  pauseAutoPlayOnTouch: true,
-                  pauseAutoPlayOnManualNavigate: true,
-                  // onPageChanged: (index, reason) => setState(() {
-                  // if (index == urlImages.length - 1) {
-                  // activeIndex = 0;
-                  // } else {
-                  // activeIndex++;
-                  // }
-                  // }),
-                ),
-                itemCount: urlImages.length,
-                itemBuilder: (context, index, realIndex) {
-                  activeIndex = index;
-                  final _urlImages = urlImages[index];
-                  return buildImage(_urlImages, index);
-                },
+        body: ListView(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LocationScreen(
+                    locationWeather: weatherData ?? WeatherModel(),
+                  )
+                ],
               ),
-              const SizedBox(height: 20),
-              buildIndicator(),
+              const SizedBox(height: 50),
+              Center(
+                child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CarouselSlider.builder(
+                        options: CarouselOptions(
+                          height: 250,
+                          // initialPage: 0,
+                          autoPlay: true,
+                          enableInfiniteScroll: true,
+                          autoPlayInterval: const Duration(seconds: 8),
+                          autoPlayAnimationDuration:
+                              const Duration(milliseconds: 800),
+                          enlargeCenterPage: true,
+                          enlargeStrategy: CenterPageEnlargeStrategy.height,
+                          pauseAutoPlayOnTouch: true,
+                          pauseAutoPlayOnManualNavigate: true,
+                          // onPageChanged: (index, reason) => setState(() {
+                          // if (index == urlImages.length - 1) {
+                          // activeIndex = 0;
+                          // } else {
+                          // activeIndex++;
+                          // }
+                          // }),
+                        ),
+                        itemCount: urlImages.length,
+                        itemBuilder: (context, index, realIndex) {
+                          activeIndex = index;
+                          final _urlImages = urlImages[index];
+                          return buildImage(_urlImages, index);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      // buildIndicator(),
+                    ]),
+              ),
             ]),
-          ),
-        ]),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          backgroundColor: Colors.purple,
+          child: const Icon(Icons.question_mark),
+        ),
       ),
     );
   }
@@ -253,7 +265,7 @@ class IndexPage extends State<IndexPageAux> {
           (value) => Navigator.pushReplacement(
             _context,
             MaterialPageRoute(
-              builder: (context) => LoginWidget(),
+              builder: (context) => const LoginWidget(),
             ),
           ),
         );
