@@ -5,13 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
-import 'package:sos_vc/app/ui/initial/loading_screen.dart';
+import 'package:sos_vc/app/ui/initial/faq.dart';
 import 'package:sos_vc/app/ui/initial/weather_location.dart';
-import 'package:sos_vc/app/ui/profile/my-favorites.dart';
+import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
 import 'package:sos_vc/app/data/model/registration.dart';
-import 'location_screen.dart';
 import '../../controller/weather.dart';
 
 class IndexPageAux extends StatefulWidget {
@@ -43,9 +42,6 @@ class IndexPage extends State<IndexPageAux> {
     super.initState();
     getUser();
     getDataWeather();
-    // setState(() {
-    // weatherData = WeatherModel().getLocationWeather();
-    // });
   }
 
   void getDataWeather() async {
@@ -79,7 +75,7 @@ class IndexPage extends State<IndexPageAux> {
                       radius: 100,
                       backgroundColor: Colors.white,
                       child: GestureDetector(
-                          child: user!.photoURL!.isEmpty
+                          child: user!.photoURL == null
                               ? Text(name.characters.first)
                               : ClipOval(
                                   child: Image.file(
@@ -96,11 +92,6 @@ class IndexPage extends State<IndexPageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.notifications_none),
-                  title: const Text('Notificações'),
-                  onTap: () => Get.toNamed(IndexPageAux.tag),
-                ),
-                ListTile(
                   leading: const Icon(Icons.map_rounded),
                   title: const Text('Minha região'),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
@@ -112,12 +103,17 @@ class IndexPage extends State<IndexPageAux> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.favorite),
-                  title: const Text("Favoritos"),
+                  title: const Text("Doações"),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
                 ),
                 ListTile(
                   leading: const Icon(Icons.person),
                   title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.notification_important),
+                  title: const Text('Informações importantes'),
                   onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
@@ -157,6 +153,17 @@ class IndexPage extends State<IndexPageAux> {
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Bem vindo(a), ${name[0].toUpperCase()}${name.split(' ').join().substring(1).toLowerCase()}!',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w200,
+                    // color: Color(0xFF7540EE),
+                    fontSize: 20,
+                  ),
+                ),
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -167,47 +174,45 @@ class IndexPage extends State<IndexPageAux> {
               ),
               const SizedBox(height: 50),
               Center(
-                child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CarouselSlider.builder(
-                        options: CarouselOptions(
-                          height: 250,
-                          // initialPage: 0,
-                          autoPlay: true,
-                          enableInfiniteScroll: true,
-                          autoPlayInterval: const Duration(seconds: 8),
-                          autoPlayAnimationDuration:
-                              const Duration(milliseconds: 800),
-                          enlargeCenterPage: true,
-                          enlargeStrategy: CenterPageEnlargeStrategy.height,
-                          pauseAutoPlayOnTouch: true,
-                          pauseAutoPlayOnManualNavigate: true,
-                          // onPageChanged: (index, reason) => setState(() {
-                          // if (index == urlImages.length - 1) {
-                          // activeIndex = 0;
-                          // } else {
-                          // activeIndex++;
-                          // }
-                          // }),
-                        ),
-                        itemCount: urlImages.length,
-                        itemBuilder: (context, index, realIndex) {
-                          activeIndex = index;
-                          final _urlImages = urlImages[index];
-                          return buildImage(_urlImages, index);
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      // buildIndicator(),
-                    ]),
+                child: Column(children: [
+                  CarouselSlider.builder(
+                    options: CarouselOptions(
+                      height: 250,
+                      // initialPage: 0,
+                      autoPlay: true,
+                      enableInfiniteScroll: true,
+                      autoPlayInterval: const Duration(seconds: 8),
+                      autoPlayAnimationDuration:
+                          const Duration(milliseconds: 800),
+                      enlargeCenterPage: true,
+                      enlargeStrategy: CenterPageEnlargeStrategy.height,
+                      pauseAutoPlayOnTouch: true,
+                      pauseAutoPlayOnManualNavigate: true,
+                      // onPageChanged: (index, reason) => setState(() {
+                      // if (index == urlImages.length - 1) {
+                      // activeIndex = 0;
+                      // } else {
+                      // activeIndex++;
+                      // }
+                      // }),
+                    ),
+                    itemCount: urlImages.length,
+                    itemBuilder: (context, index, realIndex) {
+                      activeIndex = index;
+                      final _urlImages = urlImages[index];
+                      return buildImage(_urlImages, index);
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  // buildIndicator(),
+                ]),
               ),
             ]),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Add your onPressed code here!
+            Get.toNamed(FAQPageAux.tag);
           },
-          backgroundColor: Colors.purple,
+          backgroundColor: Color(0xFF7540EE).withOpacity(.2),
           child: const Icon(Icons.question_mark),
         ),
       ),
@@ -236,29 +241,8 @@ class IndexPage extends State<IndexPageAux> {
         email = user!.email!;
         name = user!.displayName!;
       });
-
-      // DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-      // .collection('users')
-      // .doc(user!.uid)
-      // .get();
-
-      // var teste = docSnapshot.data();
     }
   }
-
-  // Future<Registration?> getNameByEmail(String email) async {
-  // final docUser = FirebaseFirestore.instance
-  // .collection('users')
-  // .where('email', isEqualTo: email)
-  // .limit(1);
-
-  // final snapshot = await docUser.get();
-
-  // if (snapshot.docs.isNotEmpty) {
-  // return Registration.fromJson(snapshot.docs.first.data());
-  // }
-  // return null;
-  // }
 
   exit() async {
     await FirebaseAuth.instance.signOut().then(

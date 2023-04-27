@@ -7,6 +7,8 @@ class Registration {
   late String CPF;
   late String email;
   late String pass;
+  late int firtAccess;
+  late String gender;
 
   Registration({
     this.id = '',
@@ -14,6 +16,8 @@ class Registration {
     required this.CPF,
     required this.email,
     required this.pass,
+    required this.firtAccess,
+    required this.gender,
   });
 
   Map<String, dynamic> toJson() => {
@@ -22,12 +26,15 @@ class Registration {
         'CPF': CPF,
         'email': email,
         'pass': pass,
+        'firstAccess': firtAccess,
+        'gender': gender,
       };
 
   static Registration fromJson(Map<String, dynamic> json) => Registration(
-        name: json['name'],
-        CPF: json['CPF'],
-        email: json['email'],
-        pass: json['pass'],
-      );
+      name: json['name'],
+      CPF: json['CPF'],
+      email: json['email'],
+      pass: json['pass'],
+      firtAccess: json['firstAccess'],
+      gender: json['gender']);
 }

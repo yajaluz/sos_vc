@@ -18,8 +18,7 @@ class SplashAnimatedPage extends State<AnimationPage> {
   @override
   void initState() {
     super.initState();
-    // SystemChrome.setEnabledSystemUIOverlays([]);
-    Future.delayed(Duration(seconds: 8)).then((_) {
+    Future.delayed(const Duration(seconds: 8)).then((_) {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const LoginWidget()));
     });

@@ -5,22 +5,22 @@ import 'package:get/get.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/profile/important.dart';
-import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
+import 'package:sos_vc/app/ui/profile/my-profile.dart';
 import 'package:sos_vc/app/ui/profile/my-region.dart';
 
-class MyProfilePageAux extends StatefulWidget {
-  static String tag = '/my-profile';
+class MyFavoritePageAux extends StatefulWidget {
+  static String tag = '/my-favorites';
 
-  const MyProfilePageAux({Key? key}) : super(key: key);
+  const MyFavoritePageAux({Key? key}) : super(key: key);
 
   @override
-  ProfilePage createState() => ProfilePage();
+  FavoritePage createState() => FavoritePage();
 }
 
-class ProfilePage extends State<MyProfilePageAux> {
-  String email = '', name = '';
+class FavoritePage extends State<MyFavoritePageAux> {
   late BuildContext _context;
+  String email = '', name = '';
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -76,9 +76,9 @@ class ProfilePage extends State<MyProfilePageAux> {
                   onTap: () => Get.toNamed(MyOrderPageAux.tag),
                 ),
                 ListTile(
-                  leading: Icon(Icons.favorite),
-                  title: Text("Doações"),
-                  onTap: () => Get.toNamed(MyFavoritePageAux.tag),
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   leading: Icon(Icons.notification_important),
@@ -107,7 +107,7 @@ class ProfilePage extends State<MyProfilePageAux> {
               scaffoldKey.currentState?.openDrawer();
             },
           ),
-          title: const Text('Meu perfil'),
+          title: const Text('Meus favoritos'),
           actions: const <Widget>[
             IconButton(
               onPressed: null,

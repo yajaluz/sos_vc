@@ -1,31 +1,31 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
-import 'package:sos_vc/app/ui/layout.dart';
+import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
 import 'package:sos_vc/app/ui/profile/my-region.dart';
 
-class MyFavoritePageAux extends StatefulWidget {
-  static String tag = '/my-favorites';
+class ImportantPageAux extends StatefulWidget {
+  static String tag = '/important';
 
-  const MyFavoritePageAux({Key? key}) : super(key: key);
+  const ImportantPageAux({Key? key}) : super(key: key);
 
   @override
-  FavoritePage createState() => FavoritePage();
+  ImportantPage createState() => ImportantPage();
 }
 
-class FavoritePage extends State<MyFavoritePageAux> {
+class ImportantPage extends State<ImportantPageAux> {
   late BuildContext _context;
   String email = '', name = '';
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
+    user = FirebaseAuth.instance.currentUser;
     getUser();
   }
 
@@ -49,7 +49,7 @@ class FavoritePage extends State<MyFavoritePageAux> {
                       radius: 100,
                       backgroundColor: Colors.white,
                       child: GestureDetector(
-                          child: user!.photoURL!.isEmpty
+                          child: user!.photoURL == null
                               ? Text(name.characters.first)
                               : ClipOval(
                                   child: Image.file(
@@ -77,8 +77,13 @@ class FavoritePage extends State<MyFavoritePageAux> {
                 ),
                 ListTile(
                   leading: Icon(Icons.favorite),
-                  title: Text("Favoritos"),
+                  title: Text("Doações"),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   dense: true,

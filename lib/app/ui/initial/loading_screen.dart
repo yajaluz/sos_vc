@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'location_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../controller/weather.dart';
 
@@ -20,15 +19,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void getLocationData() async {
     var weatherData = await WeatherModel().getLocationWeather();
-
-    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-    // return Container(
-    // child: LocationScreen2(
-    // locationWeather: weatherData,
-    // ));
-    // }));
-
-    // return weatherData;
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -5,21 +7,33 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/animationpage.dart';
+import 'package:sos_vc/app/ui/initial/faq.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/initial/loading_screen.dart';
-import 'package:sos_vc/app/ui/profile/my-favorites.dart';
+import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
 import 'package:sos_vc/app/ui/profile/my-region.dart';
-import 'package:sos_vc/app/ui/register/new-pass.dart';
-import 'package:sos_vc/app/ui/register/register.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 Future main() async {
+  HttpOverrides.global = MyHttpOverrides();
+
   Animate.restartOnHotReload = true;
+
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,15 +67,14 @@ class Teste extends StatelessWidget {
         AnimationPage.tag: (_) => const AnimationPage(),
         SignUpAux.tag: (_) => const SignUpAux(),
         LoginWidget.tag: (_) => const LoginWidget(),
-        RegisterPage.tag: (_) => RegisterPage(),
         MyFavoritePageAux.tag: (_) => const MyFavoritePageAux(),
         MyOrderPageAux.tag: (_) => const MyOrderPageAux(),
         MyRegionPageAux.tag: (_) => const MyRegionPageAux(),
         MyProfilePageAux.tag: (_) => const MyProfilePageAux(),
         ResetWidget.tag: (_) => const ResetWidget(),
-        NewPassPage.tag: (_) => NewPassPage(),
         IndexPageAux.tag: (_) => const IndexPageAux(),
         LoadingScreen.tag: (_) => const LoadingScreen(),
+        FAQPageAux.tag: (_) => const FAQPageAux(),
       },
     );
   }
@@ -70,7 +83,6 @@ class Teste extends StatelessWidget {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) => Scaffold(
         body: StreamBuilder<User?>(

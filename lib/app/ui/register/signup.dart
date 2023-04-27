@@ -31,21 +31,28 @@ class SignUpPage extends State<SignUpAux> {
   final controllerEmail = TextEditingController();
   final controllerPass = TextEditingController();
   final controllerConfirmPass = TextEditingController();
+
   UploadTask? upload;
   File? file;
   PlatformFile? pickedFile;
   bool value = true;
   late BuildContext _context;
   late String? userId;
+  late FirebaseAuth auth;
+  var gender = ['Female', 'Male', 'Others'];
   final defaultImage =
       "https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg";
 
+  late String? controllerGender = gender.first;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
-    // final filename = file != null ? basename(file!.path) : 'Nenhum arquivo selecionado!';
-
     return Layout.render(
-      // fab: null,
       content: Container(
         padding: EdgeInsets.only(top: 20, left: 40, right: 40),
         color: Colors.white,
@@ -147,6 +154,17 @@ class SignUpPage extends State<SignUpAux> {
                       ),
                     ),
                   ),
+                  validator: (value) {
+                    if (value != null && !value.isEmpty) {
+                      if (value.length < 6) {
+                        return 'O campo deve ter mais que 3 caracteres';
+                      } else {
+                        return null;
+                      }
+                    } else {
+                      return 'O campo Nome não pode ser vazio. Digite-o! Queremos te conhecer!';
+                    }
+                  },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -185,6 +203,21 @@ class SignUpPage extends State<SignUpAux> {
                     }
                   },
                 ),
+                SizedBox(height: 10),
+                DropdownButton(
+                    focusColor: Colors.lightBlueAccent,
+                    items: gender.map((String dropDownStringItem) {
+                      return DropdownMenuItem<String>(
+                        value: dropDownStringItem,
+                        child: Text(dropDownStringItem),
+                      );
+                    }).toList(),
+                    onChanged: (String? novoItemSelecionado) {
+                      setState(() {
+                        controllerGender = novoItemSelecionado!;
+                      });
+                    },
+                    value: controllerGender),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: controllerEmail,
@@ -328,21 +361,29 @@ class SignUpPage extends State<SignUpAux> {
                             name: controllerName.text,
                             email: controllerEmail.text,
                             CPF: controllerCPF.text,
-                            pass: controllerPass.text);
+                            pass: controllerPass.text,
+                            firtAccess: 1,
+                            gender: controllerGender!);
 
                         // var v = _key.currentState!.validate();
                         if (_key.currentState != null &&
                             _key.currentState!.validate()) {
+                          auth = FirebaseAuth.instance;
+
                           _key.currentState?.save();
                           _context = context;
+
                           //storage image
                           uploadTasks();
 
                           signUp();
+
+                          userId = auth.currentUser!.uid;
+
                           //salva infos e credenciais
                           createRegistration(reg: reg);
 
-                          Get.toNamed(LoginWidget.tag);
+                          // Get.toNamed(LoginWidget.tag);
                         } else {
                           Center(
                               child: Text(
@@ -367,8 +408,7 @@ class SignUpPage extends State<SignUpAux> {
                         fontStyle: FontStyle.italic,
                       ),
                     ),
-                    onPressed: () => Get.toNamed(
-                        LoginWidget.tag), //Navigator.pop(context, false),
+                    onPressed: () => Get.toNamed(LoginWidget.tag),
                   ),
                 )
               ],
@@ -402,7 +442,6 @@ class SignUpPage extends State<SignUpAux> {
   }
 
   Future createRegistration({required Registration reg}) async {
-    Future.delayed(const Duration(seconds: 3));
     final docUser = FirebaseFirestore.instance.collection('users').doc(userId);
     reg.id = userId.toString();
 
@@ -418,17 +457,36 @@ class SignUpPage extends State<SignUpAux> {
               child: CircularProgressIndicator.adaptive(),
             ));
 
+    // configura o button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {},
+    );
+
     try {
-      await FirebaseAuth.instance
+      await auth
           .createUserWithEmailAndPassword(
               email: controllerEmail.text.trim(),
               password: controllerPass.text.trim())
           .then((value) {
-        setState(() => userId = value.user!.uid);
         value.user!.updateDisplayName(controllerName.text.trim());
         value.user!.updatePhotoURL(pickedFile!.path!);
+
+        Navigator.push(_context,
+            MaterialPageRoute(builder: ((context) => const LoginWidget())));
       });
     } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        var msg1 = 'Uma conta já esxiste com esse email';
+        AlertDialog alerta = AlertDialog(
+          title: Text("Erro"),
+          content: Text(msg1),
+          actions: [
+            okButton,
+          ],
+        );
+        print(msg1);
+      }
       print(e);
     }
     navigatorKey.currentState!.popUntil((route) => route.isFirst);

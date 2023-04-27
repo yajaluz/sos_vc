@@ -53,7 +53,7 @@ class WeatherLocation extends State<LocationScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Card(
-            color: Colors.white.withOpacity(0.3),
+            color: Color(0xFF7540EE).withOpacity(0.2),
             elevation: 8,
             margin: const EdgeInsets.all(15),
             child: Column(

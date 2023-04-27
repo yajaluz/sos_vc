@@ -1,13 +1,11 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
-import 'package:sos_vc/app/ui/layout.dart';
-import 'package:sos_vc/app/ui/profile/my-favorites.dart';
+import 'package:sos_vc/app/ui/profile/important.dart';
+import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
 
@@ -27,6 +25,7 @@ class RegionPage extends State<MyRegionPageAux> {
 
   @override
   void initState() {
+    user = FirebaseAuth.instance.currentUser;
     getUser();
   }
 
@@ -50,7 +49,7 @@ class RegionPage extends State<MyRegionPageAux> {
                       radius: 100,
                       backgroundColor: Colors.white,
                       child: GestureDetector(
-                          child: user!.photoURL!.isEmpty
+                          child: user!.photoURL == null
                               ? Text(name.characters.first)
                               : ClipOval(
                                   child: Image.file(
@@ -67,19 +66,24 @@ class RegionPage extends State<MyRegionPageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
-                  leading: Icon(Icons.map_rounded),
-                  title: const Text('Minha região'),
-                  onTap: () => Get.toNamed(MyRegionPageAux.tag),
-                ),
-                ListTile(
                   leading: Icon(Icons.list_alt),
                   title: Text("Meus pedidos"),
                   onTap: () => Get.toNamed(MyOrderPageAux.tag),
                 ),
                 ListTile(
                   leading: Icon(Icons.favorite),
-                  title: Text("Favoritos"),
+                  title: Text("Doações"),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
+                ),
+                ListTile(
+                  leading: Icon(Icons.notification_important),
+                  title: Text("Informações importantes"),
+                  onTap: () => Get.toNamed(ImportantPageAux.tag),
                 ),
                 ListTile(
                   dense: true,

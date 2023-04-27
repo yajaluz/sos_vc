@@ -1,8 +1,8 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-// import 'package:sos_vc/app/data/model/registration.dart';
+import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/layout.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
@@ -19,7 +19,6 @@ class LoginWidget extends StatefulWidget {
 }
 
 class LoginPage extends State<LoginWidget> {
-  // static String tag = '/login';
   final controllerEmail = TextEditingController();
   final controllerPass = TextEditingController();
   late BuildContext _context;
@@ -27,12 +26,10 @@ class LoginPage extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return Layout.render(
-      // fab: FloatingActionButton(onPressed: () => null, child: Text('T')),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          // Padding(padding: EdgeInsets.all(5)),
           Expanded(
             flex: 1,
             child: Row(
@@ -89,6 +86,15 @@ class LoginPage extends State<LoginWidget> {
                           ),
                         ),
                       ),
+                      validator: (value) {
+                        if (value != null &&
+                            !value.isEmpty &&
+                            !EmailValidator.validate(value)) {
+                          return 'Formato de email inválido';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                     SizedBox(
                       height: 10,
@@ -116,6 +122,15 @@ class LoginPage extends State<LoginWidget> {
                           ),
                         ),
                       ),
+                      validator: (value) {
+                        if (value != null && !value.isEmpty) {
+                          if (value.length < 6) {
+                            return 'A senha deve ter pelo menos 6 caracteres.';
+                          } else {
+                            return null;
+                          }
+                        }
+                      },
                     ),
                     SizedBox(height: 20),
                   ])),
@@ -137,10 +152,6 @@ class LoginPage extends State<LoginWidget> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    // color: Color(0xFF7540EE).withOpacity(.2),
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(25),
-                    // ),
                   ),
                   TextButton(
                     onPressed: () => Get.toNamed(ResetWidget.tag),
@@ -185,19 +196,70 @@ class LoginPage extends State<LoginWidget> {
 
   Future SignIn() async {
     showDialog(
-        context: _context,
-        barrierDismissible: false,
-        builder: (context) => Center(
-              child: CircularProgressIndicator.adaptive(),
-            ));
+      context: _context,
+      barrierDismissible: false,
+      builder: (context) {
+        Future.delayed(const Duration(seconds: 5), () {
+          Navigator.of(context).pop(true);
+        });
+
+        return const Center(
+          child: CircularProgressIndicator.adaptive(),
+        );
+      },
+    );
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: controllerEmail.text.trim(),
         password: controllerPass.text.trim(),
       );
+      // .then((authResult) {
+
+      // });
     } on FirebaseAuthException catch (e) {
-      print(e);
+      Widget okButton = TextButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+
+      if (e.code == 'user-not-found') {
+        var msg1 = 'Usuário não encontrado com esse email';
+        AlertDialog alert = AlertDialog(
+          title: Text("Erro"),
+          content: Text(msg1),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: _context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+        print(msg1);
+      } else if (e.code == 'wrong-password') {
+        var msg1 = 'Senha errada';
+        AlertDialog alert = AlertDialog(
+          title: Text("Erro"),
+          content: Text(msg1),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: _context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+        print(msg1);
+      }
+
+      // Navigator.pop(_context);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);

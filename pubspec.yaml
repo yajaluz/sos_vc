@@ -71,8 +71,14 @@ dependencies:
   #masks 
   brasil_fields: ^1.7.0
 
+  #validators
+  email_validator: ^2.1.17
+
   #animated
   flutter_animate: ^4.1.1+1
+
+  #wizard ui 
+  flutter_wizard: ^2.0.5
 
 dev_dependencies:
   flutter_test:

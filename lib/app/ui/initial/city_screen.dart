@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../util/constants.dart';
-import 'location_screen.dart';
 
 class CityScreen extends StatefulWidget {
   const CityScreen({Key? key}) : super(key: key);
@@ -14,14 +13,7 @@ class _CityScreenState extends State<CityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return //Scaffold(
-        // body:
-        Container(
-      // decoration: const BoxDecoration(
-      // image: DecorationImage(
-      // image: AssetImage('assets/city_background.jpg'),
-      // fit: BoxFit.cover,
-      // )),
+    return Container(
       constraints: const BoxConstraints.expand(),
       child: SafeArea(
         child: Column(
@@ -38,13 +30,6 @@ class _CityScreenState extends State<CityScreen> {
                 ),
               ),
             ),
-            // Text(
-            // 'Weatrio',
-            // style: kLogoTextStyle,
-            // ),
-            // SizedBox(
-            // height: 100,
-            // ),
             Container(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
