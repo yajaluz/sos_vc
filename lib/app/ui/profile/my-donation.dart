@@ -22,6 +22,10 @@ class FavoritePage extends State<MyFavoritePageAux> {
   late BuildContext _context;
   String email = '', name = '';
   User? user = FirebaseAuth.instance.currentUser;
+  var ongs = ['SOS_VC', 'Mão amiga', 'Salve os seus', 'Solidários servidores'];
+
+  late String? controllerOngs = ongs.first;
+  final controllerValue = TextEditingController();
 
   @override
   void initState() {
@@ -116,7 +120,75 @@ class FavoritePage extends State<MyFavoritePageAux> {
             )
           ],
         ),
-        body: ListView(children: <Widget>[]),
+        body: ListView(children: <Widget>[
+          Center(child: Text('Escolha a instituição')),
+          DropdownButton(
+              focusColor: Colors.lightBlueAccent,
+              items: ongs.map((String dropDownStringItem) {
+                return DropdownMenuItem<String>(
+                  value: dropDownStringItem,
+                  child: Text(dropDownStringItem),
+                );
+              }).toList(),
+              onChanged: (String? novoItemSelecionado) {
+                setState(() {
+                  controllerOngs = novoItemSelecionado!;
+                });
+              },
+              value: controllerOngs),
+          SizedBox(height: 20),
+          TextFormField(
+            keyboardType: TextInputType.number,
+            controller: controllerValue,
+            textInputAction: TextInputAction.next,
+            // inputFormatters: [
+            //   FilteringTextInputFormatter.digitsOnly,
+            //   CpfInputFormatter()
+            //   InputForma
+            // ],
+            decoration: const InputDecoration(
+              hintText: 'R\$',
+              hintStyle: TextStyle(
+                fontSize: 16,
+                color: Color(0xFF787993),
+                fontStyle: FontStyle.italic,
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xFFDFDFE4),
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xFF787993),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Container(
+              // child:
+              child: TextButton(
+                  child: const Text(
+                    'Doar',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () => {}),
+              decoration: BoxDecoration(
+                color: Color(0xFF7540EE),
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }

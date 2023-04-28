@@ -18,6 +18,8 @@ import 'package:sos_vc/app/ui/register/reset-password.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'app/ui/profile/my-order-continue.dart';
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -69,6 +71,7 @@ class Teste extends StatelessWidget {
         LoginWidget.tag: (_) => const LoginWidget(),
         MyFavoritePageAux.tag: (_) => const MyFavoritePageAux(),
         MyOrderPageAux.tag: (_) => const MyOrderPageAux(),
+        MyOrderPageAuxContinue.tag: (_) => const MyOrderPageAuxContinue(),
         MyRegionPageAux.tag: (_) => const MyRegionPageAux(),
         MyProfilePageAux.tag: (_) => const MyProfilePageAux(),
         ResetWidget.tag: (_) => const ResetWidget(),

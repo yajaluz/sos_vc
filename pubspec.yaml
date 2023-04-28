@@ -77,6 +77,9 @@ dependencies:
   #animated
   flutter_animate: ^4.1.1+1
 
+  #cripto
+  crypto: ^3.0.2
+
   #wizard ui 
   flutter_wizard: ^2.0.5
 

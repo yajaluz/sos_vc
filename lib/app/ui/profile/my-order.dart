@@ -7,6 +7,7 @@ import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/profile/important.dart';
 import 'package:sos_vc/app/ui/profile/my-donation.dart';
+import 'package:sos_vc/app/ui/profile/my-order-continue.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
 import 'package:sos_vc/app/ui/profile/my-region.dart';
 import 'package:sos_vc/app/data/model/card.dart' as model;
@@ -21,13 +22,13 @@ class MyOrderPageAux extends StatefulWidget {
 }
 
 class OrderPage extends State<MyOrderPageAux> {
-  var name = '', email = '';
+  var name = '', email = '', id = '';
   late BuildContext _context;
   User? user = FirebaseAuth.instance.currentUser;
   late String? userId;
   late FirebaseAuth auth;
   int quant = 1;
-  late List<model.Card> items; // = model.Card.generateItems(quant);
+  late List<model.Card> items;
 
   @override
   void initState() {
@@ -152,12 +153,9 @@ class OrderPage extends State<MyOrderPageAux> {
                       fontSize: 18,
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.bold,
-                      // backgroundColor: Color(0xFF7540EE),
                     ),
                   ),
-                  onPressed: () => {} //Get.toNamed(LoginWidget.tag),
-                  ),
-              // ),
+                  onPressed: () => {Get.toNamed(MyOrderPageAuxContinue.tag)}),
               decoration: BoxDecoration(
                 color: Color(0xFF7540EE),
                 borderRadius: BorderRadius.circular(20),
@@ -203,19 +201,12 @@ class OrderPage extends State<MyOrderPageAux> {
     );
   }
 
-  // Future createRegistration({required String order}) async {
-  //   final docUser = FirebaseFirestore.instance.collection('orders').doc(userId);
-  //   // reg.id = userId.toString();
-
-  //   final info = 'quantidade:' + order; //reg.toJson();
-  //   await docUser.set(info);
-  // }
-
   getUser() async {
     if (user != null) {
       setState(() {
         email = user!.email!;
         name = user!.displayName!;
+        id = user!.uid;
       });
     }
   }

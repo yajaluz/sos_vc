@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -361,7 +363,9 @@ class SignUpPage extends State<SignUpAux> {
                             name: controllerName.text,
                             email: controllerEmail.text,
                             CPF: controllerCPF.text,
-                            pass: controllerPass.text,
+                            pass: md5
+                                .convert(utf8.encode(controllerPass.text))
+                                .toString(),
                             firtAccess: 1,
                             gender: controllerGender!);
 
