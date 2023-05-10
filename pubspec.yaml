@@ -77,6 +77,10 @@ dependencies:
   #animated
   flutter_animate: ^4.1.1+1
 
+  #google maps
+  google_maps_flutter: ^2.2.5
+  google_maps_flutter_web: ^0.4.0+8
+
   #cripto
   crypto: ^3.0.2
 

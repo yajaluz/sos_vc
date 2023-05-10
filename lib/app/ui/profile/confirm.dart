@@ -4,33 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
-import 'package:sos_vc/app/ui/profile/important.dart';
 import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sos_vc/app/ui/profile/my-region.dart';
 
-class MyRegionPageAux extends StatefulWidget {
-  static String tag = '/my-region';
+class ConfirmPageAux extends StatefulWidget {
+  static String tag = '/important';
 
-  const MyRegionPageAux({Key? key}) : super(key: key);
+  const ConfirmPageAux({Key? key}) : super(key: key);
 
   @override
-  RegionPage createState() => RegionPage();
+  ConfirmPage createState() => ConfirmPage();
 }
 
-class RegionPage extends State<MyRegionPageAux> {
-  String email = '', name = '';
+class ConfirmPage extends State<ConfirmPageAux> {
   late BuildContext _context;
+  String email = '', name = '';
   User? user = FirebaseAuth.instance.currentUser;
-
-  late GoogleMapController mapController;
-
-  final LatLng _center = const LatLng(-12.974722, -38.476665);
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
 
   @override
   void initState() {
@@ -75,6 +66,11 @@ class RegionPage extends State<MyRegionPageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
+                  leading: Icon(Icons.map_rounded),
+                  title: const Text('Minha região'),
+                  onTap: () => Get.toNamed(MyRegionPageAux.tag),
+                ),
+                ListTile(
                   leading: Icon(Icons.list_alt),
                   title: Text("Meus pedidos"),
                   onTap: () => Get.toNamed(MyOrderPageAux.tag),
@@ -88,11 +84,6 @@ class RegionPage extends State<MyRegionPageAux> {
                   leading: const Icon(Icons.person),
                   title: const Text('Minha conta'),
                   onTap: () => Get.toNamed(MyProfilePageAux.tag),
-                ),
-                ListTile(
-                  leading: Icon(Icons.notification_important),
-                  title: Text("Informações importantes"),
-                  onTap: () => Get.toNamed(ImportantPageAux.tag),
                 ),
                 ListTile(
                   dense: true,
@@ -116,7 +107,7 @@ class RegionPage extends State<MyRegionPageAux> {
               scaffoldKey.currentState?.openDrawer();
             },
           ),
-          title: const Text('Minha região'),
+          title: const Text('Meus pedidos'),
           actions: const <Widget>[
             IconButton(
               onPressed: null,
@@ -125,12 +116,34 @@ class RegionPage extends State<MyRegionPageAux> {
             )
           ],
         ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
-          ),
+        body: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: Text(
+                  'Sua solicitação foi enviada para os nossos colaboradores.\n Mas não se preocupe! Faremos que a sua experiência seja a melhor e mais rápida possível.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            Container(
+              width: 200,
+              height: 250,
+              alignment: Alignment(0.0, 1.60),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                      'assets/DrawKitVectorIllustrationSocialWork&Charity.png'),
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

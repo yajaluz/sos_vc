@@ -6,8 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sos_vc/app/data/model/registration.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
+import 'package:sos_vc/app/ui/profile/confirm.dart';
 import 'package:sos_vc/app/ui/profile/important.dart';
 import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
@@ -26,7 +28,7 @@ class MyOrderPageAuxContinue extends StatefulWidget {
 
 class OrderPageContinue extends State<MyOrderPageAuxContinue> {
   User? user = FirebaseAuth.instance.currentUser;
-  String name = '', email = '';
+  String name = '', email = '', id = '';
   late BuildContext _context;
   late String? userId;
   static const int MAX = 10000;
@@ -57,10 +59,12 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
   late String? controllerGender = gender.first;
   late String? controllerMaritalStatus = statusCivil.first;
   late String? controllerDocs = docs.first;
+  late Future<Registration?> registration;
 
   @override
   void initState() {
     user = FirebaseAuth.instance.currentUser;
+    registration = GetRegistrationById(id);
     getUser();
   }
 
@@ -208,7 +212,7 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
                       SizedBox(height: 30),
                       TextFormField(
                         autofocus: true,
-                        enabled: true,
+                        enabled: false,
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         initialValue: name.capitalize,
@@ -251,8 +255,9 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
                       SizedBox(height: 30),
                       TextFormField(
                         keyboardType: TextInputType.number,
-                        // enabled: true,
+                        enabled: false,
                         controller: controllerCPF,
+                        // initialValue: registration['cpf'].,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
                           hintText: 'CPF',
@@ -477,7 +482,8 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              onPressed: () => {}),
+                              onPressed: () =>
+                                  {Get.toNamed(ConfirmPageAux.tag)}),
                           decoration: BoxDecoration(
                             color: Color(0xFF7540EE),
                             borderRadius: BorderRadius.circular(20),
@@ -495,7 +501,23 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
     );
   }
 
-  Future createRegistration({required order.Order order}) async {
+  Stream<List<Registration>> GetRegistration() => FirebaseFirestore.instance
+      .collection('users')
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => Registration.fromJson(doc.data()))
+          .toList());
+
+  Future<Registration?> GetRegistrationById(String id) async {
+    final doc = FirebaseFirestore.instance.collection('users').doc(id);
+    final snap = await doc.get();
+
+    if (snap.exists) {
+      return Registration.fromJson(snap.data()!);
+    }
+  }
+
+  Future createOrder({required order.Order order}) async {
     final docUser = FirebaseFirestore.instance.collection('orders').doc(userId);
     order.id = userId.toString();
 
@@ -508,6 +530,7 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
       setState(() {
         email = user!.email!;
         name = user!.displayName!;
+        id = user!.uid;
       });
     }
   }

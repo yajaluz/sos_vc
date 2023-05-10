@@ -10,6 +10,7 @@ import 'package:sos_vc/app/ui/initial/animationpage.dart';
 import 'package:sos_vc/app/ui/initial/faq.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/initial/loading_screen.dart';
+import 'package:sos_vc/app/ui/profile/confirm.dart';
 import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
@@ -17,7 +18,6 @@ import 'package:sos_vc/app/ui/profile/my-region.dart';
 import 'package:sos_vc/app/ui/register/reset-password.dart';
 import 'package:sos_vc/app/ui/register/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'app/ui/profile/my-order-continue.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -78,6 +78,7 @@ class Teste extends StatelessWidget {
         IndexPageAux.tag: (_) => const IndexPageAux(),
         LoadingScreen.tag: (_) => const LoadingScreen(),
         FAQPageAux.tag: (_) => const FAQPageAux(),
+        ConfirmPageAux.tag: (_) => const ConfirmPageAux(),
       },
     );
   }
