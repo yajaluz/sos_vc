@@ -66,6 +66,11 @@ class ConfirmPage extends State<ConfirmPageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
+                ),
+                ListTile(
                   leading: Icon(Icons.map_rounded),
                   title: const Text('Minha região'),
                   onTap: () => Get.toNamed(MyRegionPageAux.tag),
@@ -79,11 +84,6 @@ class ConfirmPage extends State<ConfirmPageAux> {
                   leading: Icon(Icons.favorite),
                   title: Text("Doações"),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Minha conta'),
-                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   dense: true,

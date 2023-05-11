@@ -59,12 +59,12 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
   late String? controllerGender = gender.first;
   late String? controllerMaritalStatus = statusCivil.first;
   late String? controllerDocs = docs.first;
-  late Future<Registration?> registration;
+  // late Future<Registration?> registration;
 
   @override
   void initState() {
     user = FirebaseAuth.instance.currentUser;
-    registration = GetRegistrationById(id);
+    // registration = GetRegistrationById(id);
     getUser();
   }
 
@@ -279,21 +279,6 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
                         ),
                       ),
                       SizedBox(height: 30),
-                      DropdownButton(
-                          focusColor: Colors.lightBlueAccent,
-                          items: gender.map((String dropDownStringItem) {
-                            return DropdownMenuItem<String>(
-                              value: dropDownStringItem,
-                              child: Text(dropDownStringItem),
-                            );
-                          }).toList(),
-                          onChanged: (String? novoItemSelecionado) {
-                            setState(() {
-                              controllerGender = novoItemSelecionado!;
-                            });
-                          },
-                          value: controllerGender),
-                      SizedBox(height: 30),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         controller: controllerRG,
@@ -501,22 +486,6 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
     );
   }
 
-  Stream<List<Registration>> GetRegistration() => FirebaseFirestore.instance
-      .collection('users')
-      .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Registration.fromJson(doc.data()))
-          .toList());
-
-  Future<Registration?> GetRegistrationById(String id) async {
-    final doc = FirebaseFirestore.instance.collection('users').doc(id);
-    final snap = await doc.get();
-
-    if (snap.exists) {
-      return Registration.fromJson(snap.data()!);
-    }
-  }
-
   Future createOrder({required order.Order order}) async {
     final docUser = FirebaseFirestore.instance.collection('orders').doc(userId);
     order.id = userId.toString();
@@ -530,7 +499,7 @@ class OrderPageContinue extends State<MyOrderPageAuxContinue> {
       setState(() {
         email = user!.email!;
         name = user!.displayName!;
-        id = user!.uid;
+        // id = user!.uid!;
       });
     }
   }

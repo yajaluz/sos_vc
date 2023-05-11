@@ -436,7 +436,7 @@ class SignUpPage extends State<SignUpAux> {
   Future uploadTasks() async {
     if (pickedFile == null) return;
 
-    final fileName = basename(pickedFile!.name!);
+    final fileName = basename(pickedFile!.name);
     final destination = 'files/${fileName}';
     final fileImage = File(pickedFile!.path!);
 

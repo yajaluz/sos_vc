@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sos_vc/app/data/model/adress.dart';
 import 'package:sos_vc/app/ui/auth/login.dart';
 import 'package:sos_vc/app/ui/initial/index.dart';
 import 'package:sos_vc/app/ui/profile/important.dart';
 import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-region.dart';
+import 'package:sos_vc/app/data/model/card.dart' as model;
+import '../../data/model/registration.dart';
 
 class MyProfilePageAux extends StatefulWidget {
   static String tag = '/my-profile';
@@ -19,18 +23,44 @@ class MyProfilePageAux extends StatefulWidget {
 }
 
 class ProfilePage extends State<MyProfilePageAux> {
-  String email = '', name = '';
+  List<model.Card> items = model.Card.generateItems(5);
+  String email = '', name = '', id = '';
+  late Future<Registration?> reg;
   late BuildContext _context;
   User? user = FirebaseAuth.instance.currentUser;
   int activeIndexStep = 0;
   var tipoConta = ['Conta corrente', 'Conta poupança', 'Conta salário'];
 
+//informacoes gerais
   final controllerName = TextEditingController();
   final controllerCPF = TextEditingController();
   final controllerEmail = TextEditingController();
   final controllerPass = TextEditingController();
   final controllerConfirmPass = TextEditingController();
+  final controllerQuantFamily = TextEditingController();
+
+//endereco
+  final controllerLogradouro = TextEditingController();
+  final controllerPais = TextEditingController();
+  final controllerNumero = TextEditingController();
+  final controllerBairro = TextEditingController();
+  final controllercidade = TextEditingController();
+  final controllerEstado = TextEditingController();
+  final controllerCEP = TextEditingController();
+
+//conta bancaria
+  final controllerBanco = TextEditingController();
+  final controllerConta = TextEditingController();
+  final controllerAgencia = TextEditingController();
+
   late String? controllerCount = tipoConta.first;
+
+  @override
+  void initState() {
+    user = FirebaseAuth.instance.currentUser;
+    getUser();
+    // reg = GetRegistrationById(id);
+  }
 
   List<Step> stepList() => [
         Step(
@@ -38,73 +68,181 @@ class ProfilePage extends State<MyProfilePageAux> {
           isActive: activeIndexStep >= 0,
           title: Text('Geral'),
           content: Container(
-            child: Column(children: [
-              Center(
-                child: Text('Geral'),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: controllerName,
-                autofocus: true,
-                keyboardType: TextInputType.name,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  hintText: 'Nome completo',
-                  hintStyle: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF787993),
-                    fontStyle: FontStyle.italic,
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color(0xFFDFDFE4),
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
+            child: Column(
+              children: [
+                Center(
+                  child: Text('Geral'),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: controllerName,
+                  autofocus: true,
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    hintText: 'Nome completo',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
                       color: Color(0xFF787993),
+                      fontStyle: FontStyle.italic,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFDFDFE4),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF787993),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: controllerEmail,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                  hintStyle: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF787993),
-                    fontStyle: FontStyle.italic,
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color(0xFFDFDFE4),
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: controllerCPF,
+                  textInputAction: TextInputAction.next,
+                  // inputFormatters: [
+                  //   FilteringTextInputFormatter.digitsOnly,
+                  //   CpfInputFormatter()
+                  // ],
+                  decoration: const InputDecoration(
+                    hintText: 'CPF',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
                       color: Color(0xFF787993),
+                      fontStyle: FontStyle.italic,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFDFDFE4),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF787993),
+                      ),
                     ),
                   ),
-                ),
-                validator: (value) {
-                  if (value != null && !value.isEmpty) {
-                    if (value.length < 5) {
-                      return 'Email muito curto';
-                    } else if (!value.contains('@', 0)) {
-                      return 'Email no formato incorreto!';
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (!GetUtils.isCpf(value)) {
+                        return 'Digite um CPF válido';
+                      }
                     } else {
-                      return null;
+                      return "O campo CPF não pode ser vazio.";
                     }
-                  } else {
-                    return "O campo Email não pode ser vazio.";
-                  }
-                },
-              ),
-            ]),
+                  },
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  controller: controllerEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF787993),
+                      fontStyle: FontStyle.italic,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFDFDFE4),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF787993),
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (value.length < 5) {
+                        return 'Email muito curto';
+                      } else if (!value.contains('@', 0)) {
+                        return 'Email no formato incorreto!';
+                      } else {
+                        return null;
+                      }
+                    } else {
+                      return "O campo Email não pode ser vazio.";
+                    }
+                  },
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: controllerQuantFamily,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    hintText: 'Quantidade de familiares para cadastrar',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF787993),
+                      fontStyle: FontStyle.italic,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFDFDFE4),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF787993),
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (int.parse(value) < 0 || int.parse(value) > 10) {
+                        return 'Digite uma quantidade entre 0 e 10';
+                      } else {
+                        setState(() {
+                          items = model.Card.generateItems(
+                              int.parse(controllerQuantFamily.toString()));
+                        });
+                      }
+                    }
+                  },
+                ),
+                SizedBox(height: 10),
+                // !controllerQuantFamily.value.isNull
+                //     ? ExpansionPanelList(
+                //         expansionCallback: (panelIndex, isExpanded) {
+                //           setState(
+                //               () => items[panelIndex].isExpanded = !isExpanded);
+                //         },
+                //         children: items.map<ExpansionPanel>((model.Card card) {
+                //           return ExpansionPanel(
+                //               isExpanded: card.isExpanded,
+                //               // value: card.uid,
+                //               canTapOnHeader: true,
+                //               headerBuilder: (context, isExpanded) {
+                //                 return ListTile(
+                //                   leading: CircleAvatar(
+                //                     child: Text(card.uid.toString()),
+                //                     backgroundColor: Color(0xFF7540EE),
+                //                   ),
+                //                   title: Text(card.title),
+                //                 );
+                //               },
+                //               body: Column(
+                //                 crossAxisAlignment: CrossAxisAlignment.start,
+                //                 children: [
+                //                   Padding(
+                //                     padding:
+                //                         const EdgeInsets.only(bottom: 12.0),
+                //                     child: Text(card.description),
+                //                   )
+                //                 ],
+                //               ));
+                //         }).toList(),
+                //       )
+                //     : SizedBox(height: 0),
+              ],
+            ),
           ),
         ),
         Step(
@@ -119,7 +257,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 20),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerLogradouro,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -139,7 +277,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerNumero,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -159,7 +297,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerBairro,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -179,7 +317,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllercidade,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -199,7 +337,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerEstado,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -219,7 +357,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerPais,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -242,7 +380,8 @@ class ProfilePage extends State<MyProfilePageAux> {
           ),
         ),
         Step(
-          state: activeIndexStep <= 2 ? StepState.editing : StepState.complete,
+          state:
+              StepState.complete, //activeIndexStep <= 2 ? StepState.editing :
           isActive: activeIndexStep >= 2,
           title: Text('Conta bancária'),
           content: Container(
@@ -253,7 +392,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerBanco,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -273,7 +412,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerAgencia,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -293,7 +432,7 @@ class ProfilePage extends State<MyProfilePageAux> {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: controllerName,
+                  controller: controllerConta,
                   autofocus: true,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -333,12 +472,6 @@ class ProfilePage extends State<MyProfilePageAux> {
       ];
 
   @override
-  void initState() {
-    user = FirebaseAuth.instance.currentUser;
-    getUser();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var scaffoldKey = GlobalKey<ScaffoldState>();
     return MaterialApp(
@@ -373,6 +506,11 @@ class ProfilePage extends State<MyProfilePageAux> {
                   leading: Icon(Icons.home),
                   title: const Text('Início'),
                   onTap: () => Get.toNamed(IndexPageAux.tag),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   leading: Icon(Icons.map_rounded),
@@ -449,11 +587,37 @@ class ProfilePage extends State<MyProfilePageAux> {
     );
   }
 
+  Stream<List<Registration>> GetRegistration() => FirebaseFirestore.instance
+      .collection('users')
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => Registration.fromJson(doc.data()))
+          .toList());
+
+  Future<Registration?> GetRegistrationById(String id) async {
+    final doc = FirebaseFirestore.instance.collection('users').doc(id);
+    final snap = await doc.get();
+
+    if (snap.exists) {
+      return Registration.fromJson(snap.data()!);
+    }
+  }
+
+  Future createOrder({required Adress order}) async {
+    final docUser =
+        FirebaseFirestore.instance.collection('orders').doc(user!.uid!);
+    order.id = user!.uid.toString();
+
+    final info = order.toJson();
+    await docUser.set(info);
+  }
+
   getUser() async {
     if (user != null) {
       setState(() {
         email = user!.email!;
         name = user!.displayName!;
+        id = user!.uid;
       });
     }
   }

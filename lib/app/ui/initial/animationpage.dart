@@ -52,7 +52,7 @@ class SplashAnimatedPage extends State<AnimationPage> {
               child: Container(
                 width: 150,
                 height: 15,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.black38,
                   borderRadius: BorderRadius.all(
                     Radius.elliptical(150, 15),

@@ -75,6 +75,11 @@ class RegionPage extends State<MyRegionPageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
+                ),
+                ListTile(
                   leading: Icon(Icons.list_alt),
                   title: Text("Meus pedidos"),
                   onTap: () => Get.toNamed(MyOrderPageAux.tag),
@@ -83,11 +88,6 @@ class RegionPage extends State<MyRegionPageAux> {
                   leading: Icon(Icons.favorite),
                   title: Text("Doações"),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Minha conta'),
-                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   leading: Icon(Icons.notification_important),

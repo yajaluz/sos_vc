@@ -70,6 +70,11 @@ class FavoritePage extends State<MyFavoritePageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
+                ),
+                ListTile(
                   leading: Icon(Icons.map_rounded),
                   title: const Text('Minha região'),
                   onTap: () => Get.toNamed(MyRegionPageAux.tag),
@@ -78,11 +83,6 @@ class FavoritePage extends State<MyFavoritePageAux> {
                   leading: Icon(Icons.list_alt),
                   title: Text("Meus pedidos"),
                   onTap: () => Get.toNamed(MyOrderPageAux.tag),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Minha conta'),
-                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   leading: Icon(Icons.notification_important),

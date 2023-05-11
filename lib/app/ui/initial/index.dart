@@ -11,6 +11,7 @@ import 'package:sos_vc/app/ui/profile/my-donation.dart';
 import 'package:sos_vc/app/ui/profile/my-order.dart';
 import 'package:sos_vc/app/ui/profile/my-profile.dart';
 import 'package:sos_vc/app/data/model/registration.dart';
+import 'package:sos_vc/app/ui/profile/my-region.dart';
 import '../../controller/weather.dart';
 
 class IndexPageAux extends StatefulWidget {
@@ -92,9 +93,14 @@ class IndexPage extends State<IndexPageAux> {
                   onTap: () => Get.toNamed(IndexPageAux.tag),
                 ),
                 ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('Minha conta'),
+                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
+                ),
+                ListTile(
                   leading: const Icon(Icons.map_rounded),
                   title: const Text('Minha região'),
-                  onTap: () => Get.toNamed(MyFavoritePageAux.tag),
+                  onTap: () => Get.toNamed(MyRegionPageAux.tag),
                 ),
                 ListTile(
                   leading: const Icon(Icons.list_alt),
@@ -105,11 +111,6 @@ class IndexPage extends State<IndexPageAux> {
                   leading: const Icon(Icons.favorite),
                   title: const Text("Doações"),
                   onTap: () => Get.toNamed(MyFavoritePageAux.tag),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Minha conta'),
-                  onTap: () => Get.toNamed(MyProfilePageAux.tag),
                 ),
                 ListTile(
                   leading: const Icon(Icons.notification_important),
@@ -154,7 +155,7 @@ class IndexPage extends State<IndexPageAux> {
             physics: const ClampingScrollPhysics(),
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 child: Text(
                   'Bem vindo(a), ${name[0].toUpperCase()}${name.split(' ').join().substring(1).toLowerCase()}!',
                   style: const TextStyle(
